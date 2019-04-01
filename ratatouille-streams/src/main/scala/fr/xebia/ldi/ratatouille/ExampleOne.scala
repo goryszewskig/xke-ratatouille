@@ -18,7 +18,7 @@ object ExampleOne extends App with Example {
   val config = Map(
     StreamsConfig.APPLICATION_ID_CONFIG -> "answer-one-breakfast",
     StreamsConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092",
-    StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG -> classOf[LogAndContinueExceptionHandler]
+    // TODO: [1] add an ExceptionHandler
   )
 
   val consumed: Consumed[Bytes, Breakfast] = Consumed.`with`(Serdes.Bytes, BreakfastSerde.Serde.breakfast)
@@ -27,15 +27,17 @@ object ExampleOne extends App with Example {
 
   builder
 
-    .stream[Bytes, Breakfast]("exercise-breakfast")(consumed)
+    // TODO: [1] consume
+    .stream[Nothing, Nothing]("exercise-breakfast")(???)
 
     .mapValues { meal =>
 
-      s"lang: ${meal.lang},  drink: ${meal.drink},  fruits ${meal.fruit},  ${meal.dishes.right.get}"
+      //s"lang: ${meal.lang},  drink: ${meal.drink},  fruits ${meal.fruit},  ${meal.dishes.right.get}"
 
     }
 
-    .print(Printed.toSysOut[Bytes, String])
+    // TODO: [1] print
+    .print(???)
 
 
   val streams: KafkaStreams = new KafkaStreams(builder.build(), config.toProperties)

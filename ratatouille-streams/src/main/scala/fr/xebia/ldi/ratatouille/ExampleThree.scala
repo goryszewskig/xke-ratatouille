@@ -1,6 +1,7 @@
 package fr.xebia.ldi.ratatouille
 
 import fr.xebia.ldi.ratatouille.processor.WrongJsonSink
+import fr.xebia.ldi.ratatouille.serde.CirceSerde
 import fr.xebia.ldi.ratatouille.serdes.JsonSerdes
 import io.circe._
 import org.apache.kafka.common.utils.Bytes
@@ -18,22 +19,25 @@ object ExampleThree extends App with Example {
     StreamsConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092"
   )
 
-  implicit val consumed: Consumed[Bytes, Json] = Consumed.`with`(Serdes.Bytes , JsonSerdes.serdes)
+  // TODO: [3] JsonSerdes.serdes
+  val consumed: Consumed[Bytes, Json] = Consumed.`with`(Serdes.Bytes , CirceSerde.serdes)
 
-  implicit val produced: Produced[Bytes, Json] = Produced.`with`(Serdes.Bytes , JsonSerdes.serdes)
+  val produced: Produced[Bytes, Json] = Produced.`with`(Serdes.Bytes , CirceSerde.serdes)
 
   val builder: StreamsBuilder = new StreamsBuilder()
 
-  val Array(errors, input) = builder.stream[Bytes, Json]("exercise-drink").branch(
-    (_, value) => value.isNull ,
-    (_, value) => !value.isNull
-  )
+  // TODO: [3] consume
+  // TODO: [3] branch
 
-  errors.transformValues(() => new WrongJsonSink)
+  val input = builder.stream[Bytes, Json]("exercise-drink")(???)
+
+
+  // TODO: [3] monitor
 
   val maybeJsons: KStream[Bytes, Json] = input.flatMapValues(_.asArray.getOrElse(Vector.empty))
 
-  maybeJsons.to("exercise-drink-out")
+  // TODO: [3] produce
+  maybeJsons.to("exercise-drink-out")(???)
 
   val streams: KafkaStreams = new KafkaStreams(builder.build(), config.toProperties)
 

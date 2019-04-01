@@ -17,14 +17,16 @@ object ExampleTwo extends App with Example {
   val config = Map(
     StreamsConfig.APPLICATION_ID_CONFIG -> "answer-two-lunch",
     StreamsConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092",
-    StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG -> classOf[LogAndContinueExceptionHandler]
+    // TODO: [2] change the default handler
+    //StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG -> classOf[LogAndContinueExceptionHandler]
   )
 
   val builder: StreamsBuilder = new StreamsBuilder()
 
-  val Array(error, meals) = builder
+  val meals = builder
 
-    .stream[String, String]("exercise-lunch")(Consumed.`with`(Serdes.String, Serdes.String))
+    // TODO: [2] consume
+    .stream[String, String]("exercise-lunch")(???)
 
     .flatMapValues { line =>
 
@@ -32,18 +34,15 @@ object ExampleTwo extends App with Example {
 
         .readCSVFromString(line, ',')
 
-        .map(_.getOrElse(new LunchError(line)))
+        // TODO [2] flatten the try
     }
 
-    .branch(
-      (_, lunch) => lunch.isInstanceOf[LunchError],
-      (_, _) => true,
-    )
+  // TODO: [2] branch
 
-  error.foreach((_, err) => logger.warn(err.toString))
+  // TODO: [2] log the errors
 
   meals
-    .map((_, meal) => (dishToString.to(meal.`type`), meal.price))
+    .map((_, meal) => (dishToString.to(meal.get.`type`), meal.get.price))
 
     .print(Printed.toSysOut[String, Double])
 
