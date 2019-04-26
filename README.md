@@ -82,6 +82,8 @@ In a new terminal, start the streaming app.
 $ ./gradlew demo
 ```
 [![asciicast](https://asciinema.org/a/xEhjhc5JomMpnXqLEtV1SslZ1.svg)](https://asciinema.org/a/xEhjhc5JomMpnXqLEtV1SslZ1)
+[![Streaming App Poison Pills: handle the unexpected with Kafka Streams](https://video-to-markdown.netlify.com/.netlify/functions/image?url=https%3A%2F%2Fasciinema.org%2Fa%2FxEhjhc5JomMpnXqLEtV1SslZ1)]
+
 
 Since it's the correction, this version take care of all the corrupted messages.
 
